@@ -1,17 +1,16 @@
-import { ComponentType, useEffect, useRef, useState } from 'react';
+import { ComponentType, useEffect, useRef } from 'react';
 import { FocusContext, FocusContextValue, Node } from './FocusContext';
 import { ArrowKey, arrowKeys, findNext } from './utils';
 
 export const FocusProvider: ComponentType = ({ children }) => {
-  const [currentNode, setCurrentNode] = useState<Node | null>(null);
+  const currentNodeRef = useRef<Node | null>(null);
   const targetNodesRef = useRef<Node[]>([]);
 
   const value: FocusContextValue = {
-    getFocused: () => currentNode && currentNode.ref,
-    add: node => {
+    addNode: node => {
       targetNodesRef.current.push(node);
     },
-    remove: node => {
+    removeNode: node => {
       targetNodesRef.current.splice(targetNodesRef.current.indexOf(node));
     },
   };
@@ -19,7 +18,7 @@ export const FocusProvider: ComponentType = ({ children }) => {
   useEffect(() => {
     const firstTarget = targetNodesRef.current[0];
     if (firstTarget) {
-      setCurrentNode(firstTarget);
+      currentNodeRef.current = firstTarget;
       if (firstTarget.onFocus) {
         firstTarget.onFocus();
       }
@@ -29,16 +28,16 @@ export const FocusProvider: ComponentType = ({ children }) => {
   useEffect(() => {
     const keydown = (event: KeyboardEvent) => {
       const code = event.code as ArrowKey;
-      if (!currentNode || !arrowKeys.includes(code)) {
+      if (!currentNodeRef.current || !arrowKeys.includes(code)) {
         return;
       }
       event.preventDefault();
-      const nextNode = findNext(currentNode, targetNodesRef.current, code);
+      const nextNode = findNext(currentNodeRef.current, targetNodesRef.current, code);
       if (nextNode) {
-        if (currentNode.onBlur) {
-          currentNode.onBlur();
+        if (currentNodeRef.current.onBlur) {
+          currentNodeRef.current.onBlur();
         }
-        setCurrentNode(nextNode);
+        currentNodeRef.current = nextNode;
         if (nextNode.onFocus) {
           nextNode.onFocus();
         }
@@ -50,7 +49,7 @@ export const FocusProvider: ComponentType = ({ children }) => {
     return () => {
       window.removeEventListener('keydown', keydown);
     };
-  }, [currentNode]);
+  }, []);
 
   return <FocusContext.Provider value={value}>{children}</FocusContext.Provider>;
 };

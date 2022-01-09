@@ -1,4 +1,4 @@
-import { ComponentType, useEffect, useRef } from 'react';
+import { ComponentType, useEffect, useRef, useState } from 'react';
 import { Node, useFocus } from './FocusContext';
 
 type FocusableProps = {
@@ -15,16 +15,29 @@ export const Focusable: ComponentType<FocusableProps> = ({
   onBlur,
   onFocus,
 }) => {
+  const [isFocused, setFocused] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const focus = useFocus();
 
-  const isFocused = ref.current === focus.getFocused();
-
   useEffect(() => {
-    const node: Node = { onBlur, onFocus, ref: ref.current as HTMLDivElement };
-    focus.add(node);
+    const node: Node = {
+      onBlur: () => {
+        setFocused(false);
+        if (onBlur) {
+          onBlur();
+        }
+      },
+      onFocus: () => {
+        setFocused(true);
+        if (onFocus) {
+          onFocus();
+        }
+      },
+      element: ref.current as HTMLDivElement,
+    };
+    focus.addNode(node);
     return () => {
-      focus.remove(node);
+      focus.removeNode(node);
     };
   }, []);
 

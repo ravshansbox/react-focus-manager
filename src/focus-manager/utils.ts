@@ -8,7 +8,7 @@ type TargetValue = { target: NodeRect; value: number };
 
 const getNodeRect = (node: Node): NodeRect => ({
   node,
-  rect: node.ref.getBoundingClientRect(),
+  rect: node.element.getBoundingClientRect(),
 });
 
 const filterDirectionOnlyFnMap: ArrowKeyMap<(source: NodeRect) => (target: NodeRect) => boolean> = {
