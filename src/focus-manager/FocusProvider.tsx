@@ -15,6 +15,9 @@ export const FocusProvider: ComponentType = ({ children }) => {
       if (!node) {
         return;
       }
+      if (focusedNodeRef.current === node) {
+        return;
+      }
       if (focusedNodeRef.current?.onBlur) {
         focusedNodeRef.current.onBlur();
       }
@@ -24,6 +27,9 @@ export const FocusProvider: ComponentType = ({ children }) => {
       }
     },
     focusNode: node => {
+      if (focusedNodeRef.current === node) {
+        return;
+      }
       if (focusedNodeRef.current?.onBlur) {
         focusedNodeRef.current.onBlur();
       }
