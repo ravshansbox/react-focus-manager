@@ -15,6 +15,7 @@ export const App: ComponentType = () => {
               key={itemIndex}
               className={classes.item}
               focusedClassName={classes.focused}
+              focusOnHover
               onBlur={() => console.log(`blurred ${rowIndex}-${itemIndex}`)}
               onFocus={() => console.log(`focused ${rowIndex}-${itemIndex}`)}
             >

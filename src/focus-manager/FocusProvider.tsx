@@ -3,12 +3,34 @@ import { FocusContext, FocusContextValue, Node } from './FocusContext';
 import { ArrowKey, arrowKeys, findNext } from './utils';
 
 export const FocusProvider: ComponentType = ({ children }) => {
-  const currentNodeRef = useRef<Node | null>(null);
+  const focusedNodeRef = useRef<Node | null>(null);
   const targetNodesRef = useRef<Node[]>([]);
 
   const value: FocusContextValue = {
     addNode: node => {
       targetNodesRef.current.push(node);
+    },
+    focusElement: element => {
+      const node = targetNodesRef.current.find(targetNode => targetNode.element === element);
+      if (!node) {
+        return;
+      }
+      if (focusedNodeRef.current?.onBlur) {
+        focusedNodeRef.current.onBlur();
+      }
+      focusedNodeRef.current = node;
+      if (node.onFocus) {
+        node.onFocus();
+      }
+    },
+    focusNode: node => {
+      if (focusedNodeRef.current?.onBlur) {
+        focusedNodeRef.current.onBlur();
+      }
+      focusedNodeRef.current = node;
+      if (node.onFocus) {
+        node.onFocus();
+      }
     },
     removeNode: node => {
       targetNodesRef.current.splice(targetNodesRef.current.indexOf(node));
@@ -18,7 +40,7 @@ export const FocusProvider: ComponentType = ({ children }) => {
   useEffect(() => {
     const firstTarget = targetNodesRef.current[0];
     if (firstTarget) {
-      currentNodeRef.current = firstTarget;
+      focusedNodeRef.current = firstTarget;
       if (firstTarget.onFocus) {
         firstTarget.onFocus();
       }
@@ -28,16 +50,16 @@ export const FocusProvider: ComponentType = ({ children }) => {
   useEffect(() => {
     const keydown = (event: KeyboardEvent) => {
       const code = event.code as ArrowKey;
-      if (!currentNodeRef.current || !arrowKeys.includes(code)) {
+      if (!focusedNodeRef.current || !arrowKeys.includes(code)) {
         return;
       }
       event.preventDefault();
-      const nextNode = findNext(currentNodeRef.current, targetNodesRef.current, code);
+      const nextNode = findNext(focusedNodeRef.current, targetNodesRef.current, code);
       if (nextNode) {
-        if (currentNodeRef.current.onBlur) {
-          currentNodeRef.current.onBlur();
+        if (focusedNodeRef.current.onBlur) {
+          focusedNodeRef.current.onBlur();
         }
-        currentNodeRef.current = nextNode;
+        focusedNodeRef.current = nextNode;
         if (nextNode.onFocus) {
           nextNode.onFocus();
         }

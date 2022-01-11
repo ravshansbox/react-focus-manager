@@ -8,11 +8,15 @@ export type Node = {
 
 export type FocusContextValue = {
   addNode: (node: Node) => void;
+  focusElement: (element: HTMLElement) => void;
+  focusNode: (node: Node) => void;
   removeNode: (node: Node) => void;
 };
 
 export const FocusContext = createContext<FocusContextValue>({
   addNode: () => {},
+  focusElement: () => {},
+  focusNode: () => {},
   removeNode: () => {},
 });
 

@@ -4,6 +4,7 @@ import { Node, useFocus } from './FocusContext';
 type FocusableProps = {
   className?: string;
   focusedClassName?: string;
+  focusOnHover?: boolean;
   onBlur?: () => void;
   onFocus?: () => void;
 };
@@ -12,12 +13,20 @@ export const Focusable: ComponentType<FocusableProps> = ({
   children,
   className,
   focusedClassName = 'focused',
+  focusOnHover,
   onBlur,
   onFocus,
 }) => {
   const [isFocused, setFocused] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const focus = useFocus();
+
+  const onMouseOver =
+    focusOnHover === true
+      ? () => {
+          focus.focusElement(ref.current as HTMLDivElement);
+        }
+      : undefined;
 
   useEffect(() => {
     const node: Node = {
@@ -42,7 +51,11 @@ export const Focusable: ComponentType<FocusableProps> = ({
   }, []);
 
   return (
-    <div ref={ref} className={[className, isFocused && focusedClassName].filter(Boolean).join(' ')}>
+    <div
+      ref={ref}
+      className={[className, isFocused && focusedClassName].filter(Boolean).join(' ')}
+      onMouseOver={onMouseOver}
+    >
       {children}
     </div>
   );
