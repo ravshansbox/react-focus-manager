@@ -39,7 +39,7 @@ export const FocusProvider: ComponentType = ({ children }) => {
       }
     },
     removeNode: node => {
-      targetNodesRef.current.splice(targetNodesRef.current.indexOf(node));
+      targetNodesRef.current.splice(targetNodesRef.current.indexOf(node), 1);
     },
   };
 
