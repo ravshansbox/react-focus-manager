@@ -1,17 +1,21 @@
-import { ComponentType, useEffect, useRef } from 'react';
+import { ComponentType, PropsWithChildren, useEffect, useRef } from 'react';
 import { FocusContext, FocusContextValue, Node } from './FocusContext';
 import { ArrowKey, arrowKeys, findNext } from './utils';
 
-export const FocusProvider: ComponentType = ({ children }) => {
+export const FocusProvider: ComponentType<PropsWithChildren> = ({
+  children,
+}) => {
   const focusedNodeRef = useRef<Node | null>(null);
   const targetNodesRef = useRef<Node[]>([]);
 
   const value: FocusContextValue = {
-    addNode: node => {
+    addNode: (node) => {
       targetNodesRef.current.push(node);
     },
-    focusElement: element => {
-      const node = targetNodesRef.current.find(targetNode => targetNode.element === element);
+    focusElement: (element) => {
+      const node = targetNodesRef.current.find(
+        (targetNode) => targetNode.element === element,
+      );
       if (!node) {
         return;
       }
@@ -26,7 +30,7 @@ export const FocusProvider: ComponentType = ({ children }) => {
         node.onFocus();
       }
     },
-    focusNode: node => {
+    focusNode: (node) => {
       if (focusedNodeRef.current === node) {
         return;
       }
@@ -38,7 +42,7 @@ export const FocusProvider: ComponentType = ({ children }) => {
         node.onFocus();
       }
     },
-    removeNode: node => {
+    removeNode: (node) => {
       targetNodesRef.current.splice(targetNodesRef.current.indexOf(node), 1);
     },
   };
@@ -60,7 +64,11 @@ export const FocusProvider: ComponentType = ({ children }) => {
         return;
       }
       event.preventDefault();
-      const nextNode = findNext(focusedNodeRef.current, targetNodesRef.current, code);
+      const nextNode = findNext(
+        focusedNodeRef.current,
+        targetNodesRef.current,
+        code,
+      );
       if (nextNode) {
         if (focusedNodeRef.current.onBlur) {
           focusedNodeRef.current.onBlur();
@@ -79,5 +87,7 @@ export const FocusProvider: ComponentType = ({ children }) => {
     };
   }, []);
 
-  return <FocusContext.Provider value={value}>{children}</FocusContext.Provider>;
+  return (
+    <FocusContext.Provider value={value}>{children}</FocusContext.Provider>
+  );
 };

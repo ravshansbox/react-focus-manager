@@ -2,9 +2,9 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "jsx": "react-jsx",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "plugins": [{ "name": "typescript-plugin-css-modules" }],
     "strict": true,
-    "target": "es2015"
+    "target": "esnext"
   }
 }

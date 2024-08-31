@@ -1,5 +1,5 @@
 import { ComponentType } from 'react';
-import * as classes from './App.module.scss';
+import * as classes from './App.module.css';
 import { Focusable } from './focus-manager/Focusable';
 import { FocusProvider } from './focus-manager/FocusProvider';
 

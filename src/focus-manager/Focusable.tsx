@@ -1,4 +1,10 @@
-import { ComponentType, useEffect, useRef, useState } from 'react';
+import {
+  ComponentType,
+  PropsWithChildren,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { Node, useFocus } from './FocusContext';
 
 type FocusableProps = {
@@ -9,7 +15,7 @@ type FocusableProps = {
   onFocus?: () => void;
 };
 
-export const Focusable: ComponentType<FocusableProps> = ({
+export const Focusable: ComponentType<PropsWithChildren<FocusableProps>> = ({
   children,
   className,
   focusedClassName = 'focused',
@@ -53,7 +59,9 @@ export const Focusable: ComponentType<FocusableProps> = ({
   return (
     <div
       ref={ref}
-      className={[className, isFocused && focusedClassName].filter(Boolean).join(' ')}
+      className={[className, isFocused && focusedClassName]
+        .filter(Boolean)
+        .join(' ')}
       onMouseOver={onMouseOver}
     >
       {children}

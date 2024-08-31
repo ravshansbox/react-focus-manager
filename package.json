@@ -15,12 +15,11 @@
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "parcel": "^2.12.0",
+    "prettier": "^3.3.3",
     "typescript": "^5.5.4",
     "typescript-plugin-css-modules": "^5.1.0"
   },
   "prettier": {
-    "arrowParens": "avoid",
-    "printWidth": 120,
     "singleQuote": true
   }
 }
